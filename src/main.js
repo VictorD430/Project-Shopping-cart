@@ -15,6 +15,14 @@ function carregando() {
   carregaSection.appendChild(span);
 }
 
+function carregaErro() {
+  const carregaSection = document.querySelector('.products');
+  const span = document.createElement('span');
+  span.classList = 'error';
+  span.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente';
+  carregaSection.appendChild(span);
+}
+
 function carregou() {
   const span = document.querySelector('.loading');
   span.remove();
@@ -44,11 +52,8 @@ const mostrarProdutos = async () => {
       title: 'Oops...',
       text: `${error}`,
     });
-    // console.log(e.message);
-    // const erro = e.message;
-    // const span = document.querySelector('.loading');
-    // span.innerHTML = `${erro}`;
-    // throw new Error('Algum erro ocorreu, recarregue a página e tente novamente');
+    carregou();
+    carregaErro();
   }
 };
 
