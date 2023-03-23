@@ -12,6 +12,10 @@ function carregando() {
   span.classList = 'loading';
   span.innerHTML = 'carregando...';
   carregaSection.appendChild(span);
+}
+
+function carregou() {
+  const span = document.querySelector('.loading');
   span.remove();
 }
 
@@ -20,12 +24,19 @@ const mostrarProdutos = async () => {
     const request = await fetchProductsList('computador');
     request.forEach((product) => {
       prodSection.appendChild(createProductElement(product));
-      // carregou();
     });
+    carregou();
   } catch (e) {
     console.log(e.message);
     throw new Error('Error...');
   }
+};
+
+const btnAdd = document.querySelectorAll('.product_add')[index];
+btnAdd.addEventListener('click', addCarrinho);
+
+const addCarrinho = async (idDoProduto) => {
+  const id = await idDoProduto.target.parentNode.firstChild.innerText;
 };
 
 window.onload = function onload() {
