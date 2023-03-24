@@ -2,7 +2,8 @@ import Swal from 'sweetalert2';
 import { searchCep } from './helpers/cepFunctions';
 import './style.css';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
-import { createProductElement } from './helpers/shopFunctions';
+import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
+import { saveCartID } from './helpers/cartFunctions';
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
 const prodSection = document.querySelector('.products');
@@ -27,16 +28,6 @@ function carregou() {
   const span = document.querySelector('.loading');
   span.remove();
 }
-const listaProdutos = (lista) => {
-  const products = document.querySelector('.products');
-  lista.forEach((result, index) => {
-    products.appendChild(
-      createProductElement(result),
-    );
-    document.querySelectorAll('.product__add')[index]
-      .addEventListener('click', fetchProduct);
-  });
-};
 
 const mostrarProdutos = async () => {
   try {
@@ -47,7 +38,6 @@ const mostrarProdutos = async () => {
     request.forEach((product) => {
       prodSection.appendChild(createProductElement(product));
     });
-    // listaProdutos(request);
     carregou();
   } catch (error) {
     Swal.fire({
@@ -60,7 +50,22 @@ const mostrarProdutos = async () => {
   }
 };
 
+const liProdutos = async () => {
+  const carrinho = document.querySelector('.cart__products');
+  const btnProd = document.querySelectorAll('.product__add');
+  btnProd.forEach((produto) => {
+    produto.addEventListener('click', async (event) => {
+      console.log('evento', event);
+      const prod = await fetchProduct(event.target.classList[1]);
+      carrinho.appendChild(createCartProductElement(prod));
+      localStorage.clear();
+      saveCartID();
+    });
+  });
+};
+
 window.onload = function onload() {
   carregando();
   mostrarProdutos();
+  liProdutos();
 };
