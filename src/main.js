@@ -39,6 +39,15 @@ const mostrarProdutos = async () => {
       prodSection.appendChild(createProductElement(product));
     });
     carregou();
+    const carrinho = document.querySelector('.cart__products');
+    const btnProd = document.querySelectorAll('.product__add');
+    btnProd.forEach((produto) => {
+      produto.addEventListener('click', async (event) => {
+        const data = await fetchProduct(event.target.parentNode.firstChild.innerText);
+        carrinho.appendChild(createCartProductElement(data));
+        saveCartID(data);
+      });
+    });
   } catch (error) {
     Swal.fire({
       icon: 'error',
@@ -50,22 +59,7 @@ const mostrarProdutos = async () => {
   }
 };
 
-const liProdutos = async () => {
-  const carrinho = document.querySelector('.cart__products');
-  const btnProd = document.querySelectorAll('.product__add');
-  btnProd.forEach((produto) => {
-    produto.addEventListener('click', async (event) => {
-      console.log('evento', event);
-      const prod = await fetchProduct(event.target.classList[1]);
-      carrinho.appendChild(createCartProductElement(prod));
-      localStorage.clear();
-      saveCartID();
-    });
-  });
-};
-
 window.onload = function onload() {
   carregando();
   mostrarProdutos();
-  liProdutos();
 };
