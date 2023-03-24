@@ -27,24 +27,27 @@ function carregou() {
   const span = document.querySelector('.loading');
   span.remove();
 }
-
-// function nemCarregou(error) {
-//   const span = document.querySelector('.loading');
-//   console.log('erro recebido em nemCarregou', error);
-//   span.innerHTML = `${error}`;
-// }
+const listaProdutos = (lista) => {
+  const products = document.querySelector('.products');
+  lista.forEach((result, index) => {
+    products.appendChild(
+      createProductElement(result),
+    );
+    document.querySelectorAll('.product__add')[index]
+      .addEventListener('click', fetchProduct);
+  });
+};
 
 const mostrarProdutos = async () => {
   try {
     const request = await fetchProductsList('computador');
-    // .then((response) => {
     if (!request) {
       throw new Error('Algum erro ocorreu, recarregue a página e tente novamente');
     }
     request.forEach((product) => {
       prodSection.appendChild(createProductElement(product));
     });
-    // });
+    // listaProdutos(request);
     carregou();
   } catch (error) {
     Swal.fire({
@@ -56,13 +59,6 @@ const mostrarProdutos = async () => {
     carregaErro();
   }
 };
-
-// const btnAdd = document.querySelectorAll('.product_add')[index];
-// btnAdd.addEventListener('click', addCarrinho);
-
-// const addCarrinho = async (idDoProduto) => {
-//   const id = await idDoProduto.target.parentNode.firstChild.innerText;
-// };
 
 window.onload = function onload() {
   carregando();
