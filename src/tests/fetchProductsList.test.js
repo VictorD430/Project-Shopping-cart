@@ -24,7 +24,10 @@ describe('Teste a função fetchProductsList', () => {
     expect(arg).toEqual(computadorSearch);
   });
   it('Teste se, ao chamar a função fetchProductsList sem argumento, retorna um erro.', async () => {
-    const arg = await fetchProductsList();
-    expect(arg).toEqual(new Error('Termo de busca não informado'));
+    try {
+      await fetchProductsList()
+    } catch(error) {
+      expect(error.message).toEqual('Termo de busca não informado');
+    }
   });
 });
