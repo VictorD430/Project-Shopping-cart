@@ -1,9 +1,13 @@
-import { removeCartID } from './cartFunctions';
+import { removeCartID, saveCartID } from './cartFunctions';
 
 // Esses comentários que estão antes de cada uma das funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições!
 
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
+
+// const somaTudo = [];
+const totalText = document.querySelector('.total-price');
+let somaTudo = 0;
 
 /**
  * Função responsável por criar e retornar o elemento de imagem do produto.
@@ -45,9 +49,17 @@ export const getIdFromProduct = (product) => (
  * @param {Element} li - Elemento do produto a ser removido do carrinho.
  * @param {string} id - ID do produto a ser removido do carrinho.
  */
-const removeCartProduct = (li, id) => {
+const removeCartProduct = (li, id, price) => {
+  const cartProduct = document.querySelector('.cart__products');
+  if (cartProduct.hasChildNodes) {
+    somaTudo -= price;
+  } else {
+    somaTudo = 0;
+  }
   li.remove();
   removeCartID(id);
+  // localStorage.setItem('cartProducts', JSON.stringify());
+  totalText.innerHTML = somaTudo;
 };
 
 /**
@@ -63,6 +75,8 @@ export const createCartProductElement = ({ id, title, price, pictures }) => {
   const li = document.createElement('li');
   li.className = 'cart__product';
   const imgContainer = createCustomElement('div', 'cart__product__image-container');
+  somaTudo += price;
+  totalText.innerHTML = somaTudo;
 
   const img = createProductImageElement(pictures[0].url);
   imgContainer.appendChild(img);
@@ -88,7 +102,7 @@ export const createCartProductElement = ({ id, title, price, pictures }) => {
   li.appendChild(removeButton);
 
   li.addEventListener('click', () => {
-    removeCartProduct(li, id);
+    removeCartProduct(li, id, price);
   });
   return li;
 };

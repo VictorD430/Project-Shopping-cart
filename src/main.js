@@ -41,12 +41,11 @@ const addCarrinho = () => {
   });
 };
 
-const locStorageLoad = async () => {
+const locStorageLoad = () => {
   const carrinho = document.querySelector('.cart__products');
   const savedId = getSavedCartIDs();
-  savedId.forEach(async ({ id }) => {
-    const data = await fetchProduct(id);
-    carrinho.appendChild(createCartProductElement(data));
+  savedId.forEach((element) => {
+    carrinho.appendChild(createCartProductElement(element));
   });
 };
 
