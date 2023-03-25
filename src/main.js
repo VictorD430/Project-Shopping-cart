@@ -3,7 +3,7 @@ import { searchCep } from './helpers/cepFunctions';
 import './style.css';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
 import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
-import { saveCartID } from './helpers/cartFunctions';
+import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
 const prodSection = document.querySelector('.products');
@@ -29,6 +29,27 @@ function carregou() {
   span.remove();
 }
 
+const addCarrinho = () => {
+  const carrinho = document.querySelector('.cart__products');
+  const btnProd = document.querySelectorAll('.product__add');
+  btnProd.forEach((produto) => {
+    produto.addEventListener('click', async (event) => {
+      const data = await fetchProduct(event.target.parentNode.firstChild.innerText);
+      carrinho.appendChild(createCartProductElement(data));
+      saveCartID(data);
+    });
+  });
+};
+
+const locStorageLoad = async () => {
+  const carrinho = document.querySelector('.cart__products');
+  const savedId = getSavedCartIDs();
+  savedId.forEach(async ({ id }) => {
+    const data = await fetchProduct(id);
+    carrinho.appendChild(createCartProductElement(data));
+  });
+};
+
 const mostrarProdutos = async () => {
   try {
     const request = await fetchProductsList('computador');
@@ -39,15 +60,7 @@ const mostrarProdutos = async () => {
       prodSection.appendChild(createProductElement(product));
     });
     carregou();
-    const carrinho = document.querySelector('.cart__products');
-    const btnProd = document.querySelectorAll('.product__add');
-    btnProd.forEach((produto) => {
-      produto.addEventListener('click', async (event) => {
-        const data = await fetchProduct(event.target.parentNode.firstChild.innerText);
-        carrinho.appendChild(createCartProductElement(data));
-        saveCartID(data);
-      });
-    });
+    addCarrinho();
   } catch (error) {
     Swal.fire({
       icon: 'error',
@@ -62,4 +75,5 @@ const mostrarProdutos = async () => {
 window.onload = function onload() {
   carregando();
   mostrarProdutos();
+  locStorageLoad();
 };
